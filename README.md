@@ -15,7 +15,7 @@ Codexで英語の論文PDFを日本語に翻訳し、原文と見比べられる
 
 ## 必要なもの
 
-- Windows（64ビット）、macOS、またはLinux
+- Windows（x64）、macOS、またはLinux
 - このフォルダで作業できるCodexの利用環境
 - `uv`（Pythonと依存ツールの導入に使用）
 - 翻訳する英語の論文PDF

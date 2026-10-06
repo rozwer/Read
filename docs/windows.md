@@ -1,6 +1,6 @@
 # Windowsでの使い方
 
-64ビットWindows上のPowerShellからセットアップし、リポジトリを開いたCodexで翻訳します。
+Windows（x64）上のPowerShellからセットアップし、リポジトリを開いたCodexで翻訳します。
 Bash・WSL・Ollama本体・PopplerはSkillの実行には不要です。
 
 ## セットアップ
@@ -72,4 +72,5 @@ uv以外でPDFMathTranslateを導入した場合は、組版スクリプトに `
 [Portabilityワークフロー](https://github.com/rozwer/Readable/actions/workflows/portability.yml)でWindowsとLinuxのテストを実行します。
 WindowsではPowerShellセットアップとPDFMathTranslateの組版ラッパー起動も検査します。
 日本語・空白を含むパス、対訳PDFの合成と画像化は合成データで確認します。
-実際の論文の翻訳品質や目視検品は、各翻訳ジョブで別途確認してください。
+[初回のWindows検証](https://github.com/rozwer/Readable/actions/runs/37447441027)では、12テスト、PowerShellセットアップ、PDFMathTranslate 1.9.11の組版ラッパー起動が成功しました。
+実際の論文を最後まで翻訳する検証や目視検品は、このCIには含みません。各翻訳ジョブで別途確認してください。
