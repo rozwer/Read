@@ -9,6 +9,14 @@ Use Codex as the translator. By default, produce two Readable-style PDFs with `J
 
 Set `SKILL_DIR` to the directory containing this file. Use scripts under `$SKILL_DIR/scripts`; do not assume a particular workspace path.
 
+## Platform support
+
+On Windows, use PowerShell and invoke Python scripts through `uv run --locked --extra skill python -X utf8`; do not run Bash commands or execute `.py` files by association. Set process environment variables with `$env:NAME = "value"`. Use absolute Windows paths and quote paths containing spaces. Create translation/review JSON using Python with `encoding="utf-8"`; Windows PowerShell's default redirection can produce UTF-16 files. Run the bridge in a separate terminal or managed subprocess and stop that specific process after the record/serve phase; do not use Unix job-control commands in PowerShell.
+
+`run_pdf2zh_readable.py` locates the Python interpreter in the uv-managed pdf2zh tool environment on Windows, macOS, and Linux. If pdf2zh was installed differently, pass `--pdf2zh-python` with the absolute path to its Python interpreter. This option goes before the `--` separator.
+
+Use `scripts/inspect_pdf.py SOURCE` to report page count and dimensions. Add `--render-dir JOB/previews --pages 1,3 --dpi 120` to render selected pages, or omit `--pages` to render all pages. This uses PyMuPDF and requires no Poppler installation. Per-page images can also be used to build the contact sheets required below. These previews do not replace the final vector PDFs or the visual inspection gate.
+
 ## Workflow
 
 1. Inspect page count and render representative source pages.

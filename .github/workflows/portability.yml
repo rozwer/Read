@@ -1,0 +1,40 @@
+name: Portability
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: utf-8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Install project dependencies
+        run: uv sync --locked --python 3.12 --extra dev --extra skill
+      - name: Unit and PDF portability tests
+        run: uv run --locked --extra dev --extra skill pytest -q
+      - name: Windows PowerShell setup
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: ./scripts/setup.ps1
+      - name: Windows pdf2zh runtime and CLI
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $runtimeDir = Join-Path $env:RUNNER_TEMP 'Readable runtime space'
+          uv run --locked --extra skill python .agents/skills/readable-pdf-translation/scripts/run_pdf2zh_readable.py --runtime-dir $runtimeDir -- --version
+          if ($LASTEXITCODE -ne 0) { throw 'pdf2zh runtime check failed.' }

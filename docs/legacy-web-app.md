@@ -42,3 +42,20 @@ uv run --locked --extra dev --extra skill pytest -q
 
 SPOK論文のPDFを手元に用意した場合は、`bash scripts/smoke_spok.sh /絶対パス/spok.pdf` でページ数を確認できます。
 このスクリプトは翻訳や品質評価を実行せず、Web画面からの投入を案内します。
+
+## Windowsで起動する場合
+
+Ollamaと利用するモデルを準備してから、PowerShellで次を実行します。
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup.ps1 -Mode Web
+uv tool update-shell
+```
+
+PowerShellを開き直し、リポジトリのルートから次を実行します。
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\run.ps1
+```
+
+`smoke_spok.sh` はBash用です。Windowsでページ数を確認する場合は、[Windows向けのPDF確認コマンド](windows.md#pdfのページ数確認画像化)を使用してください。

@@ -12,8 +12,8 @@
 ## 実装と検証
 
 - Webアプリは `src/local_readable/`、そのテストは `tests/` にあります。Webアプリのローカル接続制限を維持してください。Codex方式では翻訳対象のテキストをCodexに渡すため、完全ローカル処理と説明しないでください。
-- 依存関係は `pyproject.toml` と `uv.lock` で管理します。PDFMathTranslateは `scripts/setup.sh` で1.9.11に固定しており、Skillの組版ラッパーがこの実装に依存します。
-- 環境準備は `bash scripts/setup.sh --skill`、アプリのテストは `uv run --locked --extra dev --extra skill pytest -q` です。SkillのPythonスクリプトは `uv run --locked --extra skill python .agents/skills/readable-pdf-translation/scripts/<script>.py ...` で実行できます。
+- 依存関係は `pyproject.toml` と `uv.lock` で管理します。PDFMathTranslateは `scripts/setup.sh` と `scripts/setup.ps1` で1.9.11に固定しており、Skillの組版ラッパーがこの実装に依存します。
+- 環境準備はmacOS/Linuxで `bash scripts/setup.sh --skill`、Windowsで `powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup.ps1`、アプリのテストは `uv run --locked --extra dev --extra skill pytest -q` です。SkillのPythonスクリプトは `uv run --locked --extra skill python .agents/skills/readable-pdf-translation/scripts/<script>.py ...` で実行できます。
 - 変更内容に応じて検証してください。翻訳・組版の変更はPDFを生成して表示も確認し、単体テストの成功だけで翻訳品質やレイアウトの合格を主張しないでください。
 - 論文PDF、訳文、ログ、認証情報、仮想環境、モデルはGitに追加しないでください。共有用コード・Skillと各論文の作業データは分けて管理します。
 

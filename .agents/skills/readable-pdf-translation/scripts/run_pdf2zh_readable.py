@@ -62,20 +62,61 @@ WRAP_LINE = "                if brk and x + adv > x1 + 0.1 * size:  # 到达右�
 WRAP_PATCH = "                if brk and x + adv > x1 + 0.1 * size and not no_break_before:  # 到达右边界且原文段落存在换行"
 
 
-def interpreter_and_package(executable: Path) -> tuple[Path, Path]:
-    first = executable.read_text(encoding="utf-8").splitlines()[0]
-    if not first.startswith("#!"):
-        raise SystemExit(f"pdf2zh launcher has no Python shebang: {executable}")
-    interpreter = Path(first[2:])
+def find_interpreter(explicit: Path | None = None) -> Path:
+    if explicit is not None:
+        if not explicit.is_file():
+            raise SystemExit(f"pdf2zh Python not found: {explicit}")
+        return explicit.absolute()
+
+    # Both setup scripts install pdf2zh in uv's isolated tool environment.
+    # Windows console launchers are binary .exe files, not shebang scripts.
+    uv = shutil.which("uv")
+    if uv:
+        result = subprocess.run(
+            [uv, "tool", "dir"], capture_output=True, text=True,
+            encoding="utf-8", check=True,
+        )
+        tool_dir = Path(result.stdout.strip()) / "pdf2zh"
+        candidate = tool_dir / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+        if candidate.is_file():
+            return candidate.absolute()
+
+    executable_name = shutil.which("pdf2zh")
+    if executable_name:
+        executable = Path(executable_name).resolve()
+        if executable.suffix.lower() == ".exe":
+            candidate = executable.with_name("python.exe")
+            if candidate.is_file():
+                return candidate
+        else:
+            with executable.open("rb") as stream:
+                first = stream.readline().decode("utf-8").strip()
+            if first.startswith("#!"):
+                candidate = Path(first[2:].strip().strip('"'))
+                if candidate.is_file():
+                    return candidate
+    raise SystemExit(
+        "pdf2zh Python not found. Run the repository setup script, or pass "
+        "--pdf2zh-python /absolute/path/to/the/python-containing-pdf2zh"
+    )
+
+
+def interpreter_and_package(interpreter: Path) -> tuple[Path, Path]:
     result = subprocess.run(
         [
             str(interpreter),
+            "-I",
+            "-X", "utf8",
             "-c",
-            "import inspect,os,pdf2zh; print(os.path.dirname(inspect.getfile(pdf2zh)))",
+            "import importlib.util; "
+            "spec = importlib.util.find_spec('pdf2zh'); "
+            "assert spec and spec.submodule_search_locations, 'pdf2zh is not installed'; "
+            "print(spec.submodule_search_locations[0])",
         ],
         check=True,
         capture_output=True,
         text=True,
+        encoding="utf-8",
     )
     package = Path(result.stdout.strip().splitlines()[-1])
     if not (package / "converter.py").is_file():
@@ -137,6 +178,10 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runtime-dir", type=Path, required=True)
     parser.add_argument(
+        "--pdf2zh-python", type=Path,
+        help="Python in the pdf2zh environment; defaults to the uv tool installation",
+    )
+    parser.add_argument(
         "--preset",
         choices=("readable", "standard"),
         default="readable",
@@ -179,12 +224,11 @@ def main() -> None:
         raise SystemExit("pass pdf2zh arguments after --")
     forwarded = args.pdf2zh_args[1:] if args.pdf2zh_args[0] == "--" else args.pdf2zh_args
 
-    executable_name = shutil.which("pdf2zh")
-    if not executable_name:
-        raise SystemExit("pdf2zh executable not found")
-    interpreter, source_package = interpreter_and_package(Path(executable_name))
+    interpreter, source_package = interpreter_and_package(find_interpreter(args.pdf2zh_python))
     runtime = prepare_runtime(args.runtime_dir, source_package)
     env = os.environ.copy()
+    env["PYTHONUTF8"] = "1"
+    env["PYTHONIOENCODING"] = "utf-8"
     env["PYTHONPATH"] = str(runtime) + (
         os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else ""
     )

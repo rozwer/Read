@@ -15,9 +15,9 @@ Codexで英語の論文PDFを日本語に翻訳し、原文と見比べられる
 
 ## 必要なもの
 
-- macOSまたはLinux
+- Windows（64ビット）、macOS、またはLinux
 - このフォルダで作業できるCodexの利用環境
-- `uv` と Poppler（`pdftoppm`、`pdfinfo`）
+- `uv`（Pythonと依存ツールの導入に使用）
 - 翻訳する英語の論文PDF
 
 Python 3.12、PDF検査用ライブラリ、PDFMathTranslate 1.9.11はセットアップスクリプトで導入します。
@@ -36,21 +36,35 @@ ZIPで取得した場合も、隠しフォルダの `.agents/` を含むフォ�
 
 ### 2. 実行環境を準備する
 
-macOSでHomebrewを使う場合は、次のコマンドで必要なツールを準備できます。
-Linuxでは `uv` とPopplerを各環境の方法で導入してください。
+**Windows（PowerShell）**
 
-```bash
-brew install uv poppler
+[uv公式の導入手順](https://docs.astral.sh/uv/getting-started/installation/#winget)に沿ってインストールします。
+
+```powershell
+winget install --id astral-sh.uv -e
 ```
 
-リポジトリのルートで、Skill用のセットアップを実行します。
+PowerShellを開き直してリポジトリのフォルダへ移動し、セットアップを実行します。
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\setup.ps1
+```
+
+このコマンドの実行ポリシー指定は起動したプロセスだけに適用されます。
+WindowsではBash・WSL・Popplerを用意する必要はありません。
+詳しいパス指定やPDF確認コマンドは [Windowsでの使い方](docs/windows.md) にあります。
+
+**macOS / Linux**
+
+macOSでHomebrewを使う場合は `brew install uv` で準備できます。
+Linuxでは [uv公式の導入手順](https://docs.astral.sh/uv/getting-started/installation/)を参照してください。
 
 ```bash
 bash scripts/setup.sh --skill
 ```
 
-`pdf2zh` が見つからない場合は `uv tool update-shell` を実行し、ターミナルを開き直してください。
-依存パッケージやレイアウト解析モデル、フォントの初回取得にはネットワーク接続が必要になる場合があります。
+どちらの環境でも、依存パッケージやレイアウト解析モデル、フォントの初回取得にはネットワーク接続が必要になる場合があります。
+PDFのページ数確認・画像化には同梱の `inspect_pdf.py` を使えます。
 
 ### 3. Codexで翻訳を依頼する
 
@@ -62,6 +76,8 @@ bash scripts/setup.sh --skill
 作業データは data/jobs/paper/ に保存し、規定のレビューと目視検査を行って、
 readable・standardの対訳PDFを作成してください。
 ```
+
+Windowsでは例のPDFパスを `C:\Users\your-name\Documents\paper.pdf` のような実際のパスに置き換えてください。
 
 同名Skillが個人環境にもある場合は、上記のようにリポジトリ内のパスを指定してください。
 Skillの配置については [OpenAI公式ドキュメント](https://learn.chatgpt.com/docs/build-skills#where-codex-loads-local-skills) を参照できます。
@@ -82,12 +98,14 @@ Skillの配置については [OpenAI公式ドキュメント](https://learn.cha
 ```text
 AGENTS.md                               # エージェント向け作業ルール
 .agents/skills/readable-pdf-translation/  # 翻訳・レビュー・組版・検証のSkill
-scripts/setup.sh                        # 環境準備
+scripts/setup.ps1                       # Windowsの環境準備
+scripts/setup.sh                        # macOS / Linuxの環境準備
 pyproject.toml / uv.lock                 # Pythonの依存関係
 data/jobs/                              # 論文ごとの作業データ（Git対象外）
+docs/windows.md                          # Windowsでの使い方
 docs/legacy-web-app.md                   # 旧Webアプリの利用手順
 src/local_readable/                      # 旧Webアプリの実装
-tests/                                  # Webアプリのテスト
+tests/                                  # アプリ・Skillの動作テスト
 ```
 
 論文PDF、翻訳結果、ログ、仮想環境、モデル、認証情報は共有対象に含めません。

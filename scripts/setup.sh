@@ -13,8 +13,8 @@ esac
 command -v uv >/dev/null || { echo "uv が必要です: https://docs.astral.sh/uv/"; exit 1; }
 if [[ "$mode" == "web" ]]; then
   command -v ollama >/dev/null || { echo "Ollama が必要です: https://ollama.com/"; exit 1; }
+  command -v pdftoppm >/dev/null || { echo "Poppler が必要です: brew install poppler"; exit 1; }
 fi
-command -v pdftoppm >/dev/null || { echo "Poppler が必要です: brew install poppler"; exit 1; }
 
 uv sync --locked --python 3.12 --extra dev --extra skill
 # pdf2zh 1.9.11 imports an API removed in tencentcloud-sdk-python-tmt 3.1.
