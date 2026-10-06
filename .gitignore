@@ -1,0 +1,14 @@
+.venv/
+.DS_Store
+.env
+.env.*
+dist/
+__pycache__/
+.pytest_cache/
+*.pyc
+data/jobs/*
+!data/jobs/.gitkeep
+fixtures/*.pdf
+!fixtures/README.md
+output/
+tmp/

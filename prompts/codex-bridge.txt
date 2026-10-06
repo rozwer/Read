@@ -1,0 +1,2 @@
+Return only the translated text. Preserve every formula placeholder exactly.
+<<<SOURCE>>>${text}<<<END_SOURCE>>>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Readable PDF Translation"
+  short_description: "Create reusable Readable-style Japanese research PDFs"
+  default_prompt: "Use $readable-pdf-translation to translate this research PDF into Japanese and place each Japanese page beside its matching source page."

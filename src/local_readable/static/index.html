@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Local Readable</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Local Readable ホーム">
+      <span class="brand-mark">R</span>
+      <span>Local Readable</span>
+    </a>
+    <div class="privacy"><span class="privacy-dot"></span>端末内だけで処理</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">LOCAL PDF TRANSLATION</p>
+      <h1>論文のページを崩さず、<br>日本語で読み進める。</h1>
+      <p class="lead">図、数式、段組みを原文の位置に保ったまま翻訳。PDFはこのMacから外へ出ません。</p>
+    </section>
+
+    <section class="workspace">
+      <form id="upload-form" class="upload-card">
+        <label id="drop-zone" class="drop-zone" for="pdf-file">
+          <input id="pdf-file" name="file" type="file" accept="application/pdf,.pdf" required>
+          <span class="upload-icon">⇧</span>
+          <strong>論文PDFを選択</strong>
+          <span>または、ここへドロップ</span>
+          <small>最大200MB</small>
+        </label>
+
+        <div class="settings-grid">
+          <label>翻訳モデル
+            <select id="model" name="model" required></select>
+          </label>
+          <label>翻訳方向
+            <select disabled><option>English → 日本語</option></select>
+          </label>
+        </div>
+
+        <details class="glossary-panel">
+          <summary>専門用語を固定する <span id="term-count">0語</span></summary>
+          <div id="terms"></div>
+          <button id="add-term" type="button" class="text-button">＋ 用語を追加</button>
+        </details>
+
+        <button id="submit-button" class="primary" type="submit">ローカルで翻訳する</button>
+        <p id="form-message" class="form-message" role="status"></p>
+      </form>
+
+      <aside class="status-card">
+        <h2>ローカル環境</h2>
+        <div class="status-row"><span>Ollama</span><strong id="ollama-status">確認中</strong></div>
+        <div class="status-row"><span>外部送信</span><strong class="ok">なし</strong></div>
+        <div class="status-row"><span>保存先</span><strong>data/jobs</strong></div>
+        <p>翻訳、レイアウト解析、PDF再生成はすべてこの端末で実行されます。</p>
+      </aside>
+    </section>
+
+    <section class="jobs-section">
+      <div class="section-heading">
+        <div><p class="eyebrow">LIBRARY</p><h2>翻訳した論文</h2></div>
+        <button id="refresh" class="ghost" type="button">更新</button>
+      </div>
+      <div id="jobs" class="jobs"><p class="empty">まだ翻訳はありません。</p></div>
+    </section>
+
+    <section id="reader" class="reader hidden">
+      <div class="reader-bar">
+        <div><p class="eyebrow">BILINGUAL READER</p><h2 id="reader-title"></h2></div>
+        <button id="close-reader" class="ghost" type="button">閉じる</button>
+      </div>
+      <div class="spread">
+        <div class="page-pane"><span>原文</span><iframe id="source-frame" title="原文PDF"></iframe></div>
+        <div class="page-pane"><span>日本語</span><iframe id="translated-frame" title="翻訳PDF"></iframe></div>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js" defer></script>
+</body>
+</html>
+
