@@ -6,7 +6,10 @@
 
 翻訳Skillは [`.agents/skills/readable-pdf-translation/SKILL.md`](.agents/skills/readable-pdf-translation/SKILL.md) にあります。翻訳・レビュー規則、プロンプト、抽出・組版・検証スクリプトを含みます。リポジトリを共有すると、このSkillも一緒に渡せます。
 
+エージェント向けの作業ルールは [AGENTS.md](AGENTS.md) にまとめています。翻訳Skillの参照先、検証方法、作業データの扱い、指摘を受けた際の修正対応を定めています。
+
 ```text
+AGENTS.md                               # エージェント向け作業ルール
 .agents/skills/readable-pdf-translation/  # Codex翻訳ワークフロー一式
 src/local_readable/                      # ローカルWebアプリ
 scripts/                                # 起動・セットアップと従来の連携補助
