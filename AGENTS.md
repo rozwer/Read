@@ -1,6 +1,6 @@
-# Local Readable
+# Readable
 
-このリポジトリは、Ollamaで翻訳するローカルWebアプリと、Codexで論文を翻訳・レビューするSkillを含みます。セットアップと使い方は [README.md](README.md) を参照してください。
+このリポジトリは、Codexで論文を翻訳・レビューし、対訳PDFを作るSkillを共有します。セットアップと使い方は [README.md](README.md) を参照してください。旧ローカルWebアプリの実装も残っており、その手順は [docs/legacy-web-app.md](docs/legacy-web-app.md) にあります。
 
 ## 翻訳作業
 
